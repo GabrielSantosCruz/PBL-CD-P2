@@ -1,56 +1,47 @@
 module ClockTeste(
     input wire clock,
-    input [3:0] Chave,     
-    output reg [6:0] Display,
-    output reg [3:0] Digito
+    input wire pause_button,
+    output reg led,
+    output reg [6:0] segmentos,
+    output reg [3:0] displays
 );
-    
-    reg [15:0] contador;
-    reg [1:0] digito_atual; // Registrador para controlar o dígito atual
 
-    always @ (posedge clock) begin
-        if (contador < 16'd4667) begin
-            Digito <= 4'b0111; // Digito 1
-            Display <= 7'b0100100; // Número 2
-        end else begin 
-            Digito <= 4'b1011; // Digito 2
-            case (Chave)
-                4'b0100: Display <= 7'b0110000; // Número 3
-                4'b1100: Display <= 7'b0011001; // Número 4
-                default: Display <= 7'b0000000; // Caso padrão, display desligado
-            endcase 
-        end
+    reg [50:0] contador;
+    reg [9:0] numero;
+    reg pause_active;
 
-        if (contador == 16'd9333) begin
-            contador <= 0;
-            digito_atual <= ~digito_atual; // Alternar entre os dígitos
+    always @(posedge clock) begin
+			displays <= 4'b1110;
+        // Se o botão de pausa estiver ativo, não incrementar o contador
+        if (pause_button) begin
+            pause_active <= 1;
         end else begin
-            contador <= contador + 1;
+            pause_active <= 0;
+            if (contador == 50000000) begin // Conta até 50 milhões de ciclos de clock (1 segundo)        
+                contador <= 0; // Reinicia o contador
+                case (numero)        //gfedcba
+                    0: segmentos <= 7'b0000001; // 0
+                    1: segmentos <= 7'b1001111; // 1
+                    2: segmentos <= 7'b0010010; // 2
+                    3: segmentos <= 7'b0000110; // 3
+                    4: segmentos <= 7'b1001100; // 4
+                    5: segmentos <= 7'b0100100; // 5
+                    6: segmentos <= 7'b0100000; // 6
+                    7: segmentos <= 7'b0001111; // 7 ok
+                    8: segmentos <= 7'b0000000; // 8
+                    9: segmentos <= 7'b0000100; // 9
+                    default: segmentos <= 7'b01100000;  // Desligado
+                endcase
+                numero <= numero + 1;
+                
+            end else begin
+                if (!pause_active) begin
+                    contador <= contador + 1; // Incrementa o contador
+                    if (numero > 9) begin
+                        numero <= 0;
+                    end
+                end
+            end
         end
     end
-
-endmodule
-
-
-
-/*always @ (Chave) begin
-	
-		case (Chave)
-							        //abcdefg
-			3'b001: Display <= 7'b1111001; // digito 1
-			3'b011: Display <= 7'b0100100; // digito 2
-			3'b111: Display <= 7'b0110000; // digito 3
-
-			default: Display <= 7'b1000000;
-		endcase
-	end*/
-/*
-	 g
-	***
-b *   * f
-  * a *
-   ***
-c *   * e
-  * d *
-   ***
-*/
+endmodule 
