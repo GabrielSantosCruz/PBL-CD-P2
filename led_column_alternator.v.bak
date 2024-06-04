@@ -1,0 +1,18 @@
+module led_column_alternator(clock, column);
+	input clock;
+	output reg [4:0] column;
+	
+	reg [4:0] A, B, Adder;
+	
+	initial begin
+		A = 5'b00001;
+		B = 5'b00001;
+	end
+	
+	fivebit_adder s0 (.A(A), .B(B), .Adder(Adder));
+	
+	always @(posedge clock) begin
+		column = Adder;
+	end
+	
+endmodule

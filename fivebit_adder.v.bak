@@ -1,0 +1,8 @@
+module fivebit_adder(A, B, Cin, Cout, Adder);
+	input A, B, Cin;
+	output [4:0] Cout, Adder;
+	
+	wire w0, w1;
+	
+	
+endmodule

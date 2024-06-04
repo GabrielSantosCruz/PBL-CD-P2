@@ -1,0 +1,14 @@
+module bcd_counter(clock, bcd);
+	input clock;
+	output [3:0] bcd;
+	
+	reg [3:0] bcd;
+	
+	initial begin
+		bcd = 4'd0;
+	end
+	
+	always @(posedge clock) begin
+		bcd = bcd + 4'd1;
+	end
+endmodule

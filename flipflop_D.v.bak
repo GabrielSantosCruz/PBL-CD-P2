@@ -1,0 +1,7 @@
+module flipflop_D();
+	input ;
+	output ;
+	
+	
+
+endmodule
