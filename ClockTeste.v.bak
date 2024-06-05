@@ -1,6 +1,0 @@
-module Clockteste(
-	input Chave,
-	output [6:0] Display
-);
-
-endmodule 
